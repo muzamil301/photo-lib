@@ -1,0 +1,15 @@
+<ion-grid class="gallery-view">
+  <ion-row>
+    
+    
+    <ion-col *ngFor="let item of data;let index" size-md="3" size-sm="4" size-xs="6">
+      <ion-card class="gallery-card">
+        <img alt="image" [src]="'https://picsum.photos/400/300?random=' + index" />
+        <div class="icon-wrapper" (click)="toggleLike()"  [ngClass]="{'active': toggleColor}">
+          <ion-icon slot="icon-only" name="heart"></ion-icon>
+        </div>
+      </ion-card>
+    </ion-col>
+    
+  </ion-row>
+</ion-grid>
