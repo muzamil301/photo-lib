@@ -12,7 +12,7 @@ export class PhotosPage implements OnInit {
 
   enableScroll: boolean = true;
   loading: boolean = true;
-  pageNumber: number = 1;
+  pageNumber: number = 2;
   pageLimit: number = 10;
   galleryData: any[] = [];
 
@@ -45,7 +45,6 @@ export class PhotosPage implements OnInit {
   }
 
   async detectScroll($event: any) {
-    console.log('scroll event')
     const duration = this.generateRandomNumber(200, 300);
 
     const scrollElement = await $event.target.getScrollElement();

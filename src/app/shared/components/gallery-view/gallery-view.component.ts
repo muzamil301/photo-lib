@@ -14,7 +14,6 @@ export class GalleryViewComponent {
 
 
   addToFavoriteList(item:{}){
-    console.log(item);
     this.toggleColor = !this.toggleColor;       
   }
 

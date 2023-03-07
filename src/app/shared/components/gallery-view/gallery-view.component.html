@@ -2,7 +2,7 @@
   <ion-row>
 
     <ion-col *ngFor="let item of data;" size-md="3" size-sm="4" size-xs="6">
-      <ion-card class="gallery-card">
+      <ion-card class="gallery-card ion-no-margin">
         <img alt="image" [src]="basepath+'/id/'+item.id+'/400/400'" />
         <div class="icon-wrapper" (click)="addToFavoriteList(item)"  [ngClass]="{'active': toggleColor}">
           <ion-icon slot="icon-only" name="heart"></ion-icon>
