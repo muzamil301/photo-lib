@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { BASE_PATH } from 'src/app/config/constants';
 
 @Component({
   selector: 'app-gallery-view',
@@ -9,9 +10,12 @@ export class GalleryViewComponent {
 
   @Input() data: any = [];
   toggleColor : boolean = false;
+  basepath = BASE_PATH;
 
 
-  toggleLike(){
+  addToFavoriteList(item:{}){
+    console.log(item);
     this.toggleColor = !this.toggleColor;       
- }
+  }
+
 }
