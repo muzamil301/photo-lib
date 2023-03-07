@@ -1,20 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
+import { GalleryImageModel } from "src/app/model/gallery.model";
 
 @Component({
   selector: 'app-favorites',
   templateUrl: 'favorites.page.html',
   styleUrls: ['favorites.page.scss']
 })
-export class FavoritesPage {
+export class FavoritesPage implements OnInit {
 
-  favoriteImages: any[] = [];
+  favtImages: GalleryImageModel[] = [];
   loading: boolean = true;
 
-  constructor(private galleryService: GalleryService) {
+  constructor(private galleryService: GalleryService) {}
 
-    this.favoriteImages = this.galleryService.favoriteImagesData;
-
-   }
+  ngOnInit(): void {
+    this.loadFavtImagesList();
+  }
+  
+  loadFavtImagesList() {
+    this.favtImages = this.galleryService.getFavtImages();
+  }
 
 }

@@ -1,9 +1,13 @@
 
 <ion-content class="ion-padding">
 
-    <app-gallery-view *ngIf="favoriteImages.length > 0" [data]="favoriteImages"></app-gallery-view>
+    <app-gallery-view 
+    *ngIf="favtImages.length > 0" 
+    [data]="favtImages"
+    [enableDetailView]="true"
+    ></app-gallery-view>
 
-    <ion-grid *ngIf="favoriteImages.length < 1">
+    <ion-grid *ngIf="favtImages.length < 1">
         <ion-row class="ion-align-items-center">
             <ion-col class="ion-text-center">
                 Oops you don't have any image in favorite list <ion-icon name="sad-outline"></ion-icon>

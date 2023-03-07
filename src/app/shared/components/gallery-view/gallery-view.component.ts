@@ -1,5 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { BASE_PATH } from 'src/app/config/constants';
+import { GalleryImageModel } from "src/app/model/gallery.model";
 
 @Component({
   selector: 'app-gallery-view',
@@ -9,12 +11,19 @@ import { BASE_PATH } from 'src/app/config/constants';
 export class GalleryViewComponent {
 
   @Input() data: any = [];
-  toggleColor : boolean = false;
+  @Input() showAddToFavt?: boolean = false;
+  @Input() enableDetailView?: boolean = false;
+  @Output("addToFavtEvent") addToFavtEvent: EventEmitter<any> = new EventEmitter();
   basepath = BASE_PATH;
 
+  constructor(private router: Router){}
+  
+  addToFavtList(item:GalleryImageModel){
+    this.addToFavtEvent.emit(item);       
+  }
 
-  addToFavoriteList(item:{}){
-    this.toggleColor = !this.toggleColor;       
+  goToDetailPage(itemId:number){
+    this.router.navigate(['gallery/photo', itemId]);
   }
 
 }

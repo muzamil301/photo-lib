@@ -1,99 +1,67 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { GALLERY_IMAGES_LIST_ENDPOINT } from 'src/app/config/constants';
+import { GALLERY_IMAGES_LIST_ENDPOINT, FAVT_IMAGES_ARRAY } from 'src/app/config/constants';
+import { GalleryImageModel } from "src/app/model/gallery.model";
+import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
+import { ToastController } from '@ionic/angular';
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
-export class GalleryService {
-  favoriteImagesData = [
-    {
-        "id": "10",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/6J--NXulQCs",
-        "download_url": "https://picsum.photos/id/10/2500/1667"
-    },
-    {
-        "id": "11",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/Cm7oKel-X2Q",
-        "download_url": "https://picsum.photos/id/11/2500/1667"
-    },
-    {
-        "id": "12",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/I_9ILwtsl_k",
-        "download_url": "https://picsum.photos/id/12/2500/1667"
-    },
-    {
-        "id": "13",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/3MtiSMdnoCo",
-        "download_url": "https://picsum.photos/id/13/2500/1667"
-    },
-    {
-        "id": "14",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/IQ1kOQTJrOQ",
-        "download_url": "https://picsum.photos/id/14/2500/1667"
-    },
-    {
-        "id": "15",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/NYDo21ssGao",
-        "download_url": "https://picsum.photos/id/15/2500/1667"
-    },
-    {
-        "id": "16",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/gkT4FfgHO5o",
-        "download_url": "https://picsum.photos/id/16/2500/1667"
-    },
-    {
-        "id": "17",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/Ven2CV8IJ5A",
-        "download_url": "https://picsum.photos/id/17/2500/1667"
-    },
-    {
-        "id": "18",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/Ps2n0rShqaM",
-        "download_url": "https://picsum.photos/id/18/2500/1667"
-    },
-    {
-        "id": "19",
-        "author": "Paul Jarvis",
-        "width": 2500,
-        "height": 1667,
-        "url": "https://unsplash.com/photos/P7Lh0usGcuk",
-        "download_url": "https://picsum.photos/id/19/2500/1667"
-    }
-];
-  
-  constructor (private http: HttpClient) {}
 
-  public getImages(pageNumber:number, pageLimit:number){
-    return this.http.get(`${GALLERY_IMAGES_LIST_ENDPOINT}/?page=${pageNumber}&limit=${pageLimit}`);
-  }
+export class GalleryService {
+    private favtImagesData: Array<GalleryImageModel> = [];
+
+    constructor(private http: HttpClient, private localStorage: LocalStorageService, private toastController: ToastController) {
+        const favtImagesArray = localStorage.getItem(FAVT_IMAGES_ARRAY) || [];
+        if (favtImagesArray.length > 0) {
+            this.favtImagesData = favtImagesArray;
+        }
+    }
+
+    public getImages(pageNumber: number, pageLimit: number) {
+        return this.http.get(`${GALLERY_IMAGES_LIST_ENDPOINT}/?page=${pageNumber}&limit=${pageLimit}`);
+    }
+
+    public getFavtImages() {
+        return this.favtImagesData;
+    }
+
+    public addItemToFavtList(favtItem: GalleryImageModel) {
+        console.log('inside add fun()');
+        console.log('item', favtItem);
+        const isExist = this.favtImagesData.filter((item: GalleryImageModel) => item.id == favtItem.id);
+        
+        if (this.favtImagesData.length < 1) {
+            this.favtImagesData.push(favtItem);
+            this.localStorage.setItem(FAVT_IMAGES_ARRAY, this.favtImagesData);
+        }
+        if (isExist.length > 0) {
+            this.presentToast('Item Already exists!');
+            return;
+        }
+        if (isExist.length < 1) {
+            this.favtImagesData.push(favtItem);
+            this.localStorage.setItem(FAVT_IMAGES_ARRAY, this.favtImagesData);
+        }
+        
+
+    }
+
+    public removeItemFromFavtList(item: GalleryImageModel) {
+
+    }
+
+    async presentToast(message:string) {
+        const toast = await this.toastController.create({
+            message: message,
+            duration: 500,
+            position: 'bottom'
+        });
+
+        await toast.present();
+    }
+
 
 }

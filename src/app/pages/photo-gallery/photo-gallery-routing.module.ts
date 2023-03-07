@@ -18,6 +18,10 @@ const routes: Routes = [
         loadChildren: () => import('../tabs/favorites/favorites.module').then(m => m.FavoritesPageModule)
       },
       {
+        path: 'photo/:id',
+        loadChildren: () => import('../tabs/single-photo/single-photo.module').then(m => m.SinglePhotoPageModule)
+      },
+      {
         path: '', 
         redirectTo: '/gallery/photos',
         pathMatch: 'full'

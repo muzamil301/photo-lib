@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
+import { GalleryImageModel } from "src/app/model/gallery.model";
 
 
 @Component({
@@ -14,7 +14,7 @@ export class PhotosPage implements OnInit {
   loading: boolean = true;
   pageNumber: number = 2;
   pageLimit: number = 10;
-  galleryData: any[] = [];
+  galleryData: GalleryImageModel[] = [];
 
   constructor(private galleryService: GalleryService) { }
 
@@ -36,12 +36,14 @@ export class PhotosPage implements OnInit {
     )
   }
 
-
-  ngOnDestroy(): void {
+  addToFavtList(item: GalleryImageModel){
+    if(item){
+      this.galleryService.addItemToFavtList(item);
+    }
   }
 
-  generateRandomNumber(min: number, max: number) {
-    return Math.floor(min + Math.random() * (max - min + 1));
+  ngOnDestroy(): void {
+    // cleanup here
   }
 
   async detectScroll($event: any) {
@@ -63,6 +65,10 @@ export class PhotosPage implements OnInit {
         this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
       }, 1500)
     }
+  }
+
+  generateRandomNumber(min: number, max: number) {
+    return Math.floor(min + Math.random() * (max - min + 1));
   }
 
 }

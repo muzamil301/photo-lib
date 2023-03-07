@@ -1,5 +1,9 @@
 <ion-content class="ion-padding" [scrollEvents]="enableScroll ? true : false" (ionScroll)="detectScroll($event)">
-    <app-gallery-view [data]="galleryData"></app-gallery-view>
+    <app-gallery-view 
+    [data]="galleryData"
+    (addToFavtEvent)="addToFavtList($event)"
+    [showAddToFavt]="true"
+    ></app-gallery-view>
 
     <ion-grid *ngIf="loading">
         <ion-row class="ion-align-items-center">

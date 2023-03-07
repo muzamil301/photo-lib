@@ -2,9 +2,13 @@
   <ion-row>
 
     <ion-col *ngFor="let item of data;" size-md="3" size-sm="4" size-xs="6">
-      <ion-card class="gallery-card ion-no-margin">
+      <ion-card 
+        class="gallery-card ion-no-margin"
+        (click)="enableDetailView==true ? goToDetailPage(item.id) : null"
+        [ngClass]="{'clickable': enableDetailView==true}"
+      >
         <img alt="image" [src]="basepath+'/id/'+item.id+'/400/400'" />
-        <div class="icon-wrapper" (click)="addToFavoriteList(item)"  [ngClass]="{'active': toggleColor}">
+        <div *ngIf="showAddToFavt" class="icon-wrapper" (click)="addToFavtList(item)">
           <ion-icon slot="icon-only" name="heart"></ion-icon>
         </div>
       </ion-card>
