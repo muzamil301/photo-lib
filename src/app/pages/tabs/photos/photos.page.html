@@ -1,3 +1,12 @@
-<ion-content class="ion-padding" [scrollEvents]="enableScroll && true">
+<ion-content class="ion-padding" [scrollEvents]="enableScroll ? true : false" (ionScroll)="detectScroll($event)">
     <app-gallery-view [data]="galleryData"></app-gallery-view>
+
+    <ion-grid *ngIf="loading">
+        <ion-row class="ion-align-items-center">
+            <ion-col class="ion-text-center">
+                <app-custom-loader></app-custom-loader>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
 </ion-content>

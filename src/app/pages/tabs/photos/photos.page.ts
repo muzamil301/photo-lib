@@ -1,7 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { ScrollDetail } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
 
-import { LoadingController } from '@ionic/angular';
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
 
 
@@ -13,67 +11,59 @@ import { GalleryService } from 'src/app/services/gallery/gallery.service';
 export class PhotosPage implements OnInit {
 
   enableScroll: boolean = true;
-  pageNumber: number = 0;
-  pageLimit: number = 100;
-  galleryData:any[] = [];
+  loading: boolean = true;
+  pageNumber: number = 1;
+  pageLimit: number = 10;
+  galleryData: any[] = [];
 
-  constructor(private galleryService: GalleryService, private loadingCtrl:LoadingController) { }
+  constructor(private galleryService: GalleryService) { }
 
 
   ngOnInit(): void {
     this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
   }
 
-  @HostListener("ionScroll", ['$event'])
-  onWindowScrollToEnd($event:any) {
-    const duration = this.generateRandomNumber(200, 300);
-    console.log(
-      window.innerHeight,
-      window.scrollY,
-      document.body.scrollHeight
+  loadGalleryImagesList(pageNumber: number, pageLimit: number) {
+    this.galleryService.getImages(pageNumber, pageLimit).subscribe(
+      {
+        next: (data: any) => {
+          this.galleryData = [...this.galleryData, ...data];
+          this.loading = false;
+          this.enableScroll = true;
+        },
+        error: (err: any) => console.log(err),
+      }
     )
-    
-    if (window.innerHeight + window.scrollY === document.body.scrollHeight) {
-      this.pageNumber++;
-      this.showLoading();
-      setTimeout(()=>{
-        this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
-      }, duration);
-    }
-
-  }
-
-  async showLoading() {
-    this.enableScroll = false;
-    const loader = await this.loadingCtrl.create({
-      message: 'Loading...',
-    });
-    await loader.present();
-  }
-
-  async dismissLoading() {
-    await this.loadingCtrl.dismiss();
-    this.enableScroll = true;
-  }
-
-  loadGalleryImagesList(pageNumber:number, pageLimit:number) {
-      this.galleryService.getImages(pageNumber, pageLimit).subscribe(
-        {
-          next: (data: any) => {
-            this.galleryData= [...this.galleryData, ...data];
-            this.dismissLoading();
-          },
-          error: (err: any) => console.log(err),
-        }
-      )
   }
 
 
   ngOnDestroy(): void {
   }
 
-  generateRandomNumber(min:number, max:number) {
-    return Math.floor(min + Math.random()*(max - min + 1));
+  generateRandomNumber(min: number, max: number) {
+    return Math.floor(min + Math.random() * (max - min + 1));
+  }
+
+  async detectScroll($event: any) {
+    console.log('scroll event')
+    const duration = this.generateRandomNumber(200, 300);
+
+    const scrollElement = await $event.target.getScrollElement();
+    const scrollHeight = scrollElement.scrollHeight - scrollElement.clientHeight;
+    const currentScrollDepth = scrollElement.scrollTop;
+    const targetPercent = 99;
+
+    const triggerDepth = ((scrollHeight / 100) * targetPercent);
+
+    if (currentScrollDepth > triggerDepth) {
+      this.pageNumber++;
+      this.loading = true;
+      this.enableScroll = false;
+      // can use duration variable for random number b/w 200 to 300 miliseconds but UX is not good
+      setTimeout(() => {
+        this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
+      }, 1500)
+    }
   }
 
 }
