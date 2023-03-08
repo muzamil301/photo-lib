@@ -4,6 +4,7 @@ import { GALLERY_IMAGES_LIST_ENDPOINT, FAVT_IMAGES_ARRAY } from 'src/app/config/
 import { GalleryImageModel } from "src/app/model/gallery.model";
 import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
 import { ToastController } from '@ionic/angular';
+import { BehaviorSubject, filter, take, switchMap } from 'rxjs';
 
 
 @Injectable({
@@ -11,13 +12,12 @@ import { ToastController } from '@ionic/angular';
 })
 
 export class GalleryService {
-    private favtImagesData: Array<GalleryImageModel> = [];
+    private favtImagesSource: BehaviorSubject<any[]> = new BehaviorSubject<any>([]);
+    public favtImagesData = this.favtImagesSource.asObservable();
 
     constructor(private http: HttpClient, private localStorage: LocalStorageService, private toastController: ToastController) {
-        const favtImagesArray = localStorage.getItem(FAVT_IMAGES_ARRAY) || [];
-        if (favtImagesArray.length > 0) {
-            this.favtImagesData = favtImagesArray;
-        }
+        this.favtImagesSource = new BehaviorSubject<any>(localStorage.getItem(FAVT_IMAGES_ARRAY) || []);
+        this.favtImagesData = this.favtImagesSource.asObservable();
     }
 
     public getImages(pageNumber: number, pageLimit: number) {
@@ -28,43 +28,21 @@ export class GalleryService {
         return this.favtImagesData;
     }
 
-    public addItemToFavtList(favtItem: GalleryImageModel) {
-        const isExist = this.favtImagesData.filter((item: GalleryImageModel) => item.id == favtItem.id);
+    public updateFavtList(updatedData:any) {
         
-        if (this.favtImagesData.length < 1) {
-            this.favtImagesData.push(favtItem);
-            this.localStorage.setItem(FAVT_IMAGES_ARRAY, this.favtImagesData);
-            this.presentToast('Item added to favorite');
-            return;
+        if(updatedData){
+            this.localStorage.setItem(FAVT_IMAGES_ARRAY, updatedData);
+            this.favtImagesSource.next(updatedData);
         }
-        if (isExist.length > 0) {
-            this.presentToast('Item already exists!');
-            return;
-        }
-        if (isExist.length < 1) {
-            this.favtImagesData.push(favtItem);
-            this.localStorage.setItem(FAVT_IMAGES_ARRAY, this.favtImagesData);
-            this.presentToast('Item added to favorite');
-        }
-        
 
-    }
-
-    public removeItemFromFavtList(id: number) {
-        const filteredList = this.favtImagesData.filter((item: GalleryImageModel) => Number(item.id) !== id);
-        this.favtImagesData = filteredList;
-        this.localStorage.setItem(FAVT_IMAGES_ARRAY, filteredList);
-        this.presentToast('Item removed from favorite');
     }
 
     async presentToast(message:string) {
         const toast = await this.toastController.create({
             message: message,
-            duration: 500,
+            duration: 800,
             position: 'bottom'
         });
         await toast.present();
     }
-
-
 }

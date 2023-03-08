@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
 import { GalleryImageModel } from "src/app/model/gallery.model";
+import { ToastController } from '@ionic/angular';
+
 
 
 @Component({
@@ -14,13 +16,15 @@ export class PhotosPage implements OnInit {
   loading: boolean = true;
   pageNumber: number = 2;
   pageLimit: number = 10;
+  favtImagesData: any = [];
   galleryData: GalleryImageModel[] = [];
 
-  constructor(private galleryService: GalleryService) { }
+  constructor(private galleryService: GalleryService, private toastController: ToastController) { }
 
 
   ngOnInit(): void {
     this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
+    this.loadFavtImagesList();
   }
 
   loadGalleryImagesList(pageNumber: number, pageLimit: number) {
@@ -36,14 +40,18 @@ export class PhotosPage implements OnInit {
     )
   }
 
-  addToFavtList(item: GalleryImageModel){
-    if(item){
-      this.galleryService.addItemToFavtList(item);
+  addToFavtList(favtItem: GalleryImageModel) {
+    // check if item already exist in favt list
+    const isExist = this.favtImagesData.filter((item: GalleryImageModel) => item.id == favtItem.id);
+    if (isExist.length > 0) {
+      this.presentToast('Item already exists!');
+      return;
+    } else {
+      this.favtImagesData.push(favtItem);
+      this.galleryService.updateFavtList(this.favtImagesData);
+      this.presentToast('Item added to favorite');
     }
-  }
 
-  ngOnDestroy(): void {
-    // cleanup here
   }
 
   async detectScroll($event: any) {
@@ -67,8 +75,27 @@ export class PhotosPage implements OnInit {
     }
   }
 
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 800,
+      position: 'bottom'
+    });
+    await toast.present();
+  }
+
   generateRandomNumber(min: number, max: number) {
     return Math.floor(min + Math.random() * (max - min + 1));
+  }
+
+  loadFavtImagesList() {
+    this.galleryService.getFavtImages().subscribe((data: any) => {
+      this.favtImagesData = data;
+    });
+  }
+
+  ngOnDestroy(): void {
+    // cleanup here
   }
 
 }

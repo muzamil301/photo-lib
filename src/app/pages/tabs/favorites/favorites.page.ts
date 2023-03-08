@@ -9,7 +9,7 @@ import { GalleryImageModel } from "src/app/model/gallery.model";
 })
 export class FavoritesPage implements OnInit {
 
-  favtImages: GalleryImageModel[] = [];
+  favtImages: any = [];
   loading: boolean = true;
 
   constructor(private galleryService: GalleryService) {}
@@ -19,7 +19,9 @@ export class FavoritesPage implements OnInit {
   }
   
   loadFavtImagesList() {
-    this.favtImages = this.galleryService.getFavtImages();
+    this.galleryService.favtImagesData.subscribe((data:any)=>{
+      this.favtImages = data;
+    });
   }
 
 }
