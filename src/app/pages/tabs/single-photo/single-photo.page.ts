@@ -12,18 +12,18 @@ import { ActivatedRoute } from '@angular/router';
 export class SinglePhotoPage {
 
   basepath = BASE_PATH;
-  id:number=0;
+  id: number = 0;
 
   constructor(private galleryService: GalleryService, private route: ActivatedRoute) {
     this.route.paramMap.subscribe((params) => {
       const itemId = params.get('id');
       this.id = Number(itemId);
     });
-   }
+  }
 
-  removeFromFavtList(item: GalleryImageModel){
-    if(item){
-      this.galleryService.removeItemFromFavtList(item);
+  removeFromFavtList(id: number) {
+    if (id) {
+      this.galleryService.removeItemFromFavtList(id);
     }
   }
 

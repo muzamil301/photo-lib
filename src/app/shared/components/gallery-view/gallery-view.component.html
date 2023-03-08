@@ -9,7 +9,7 @@
       >
         <img alt="image" [src]="basepath+'/id/'+item.id+'/400/400'" />
         <div *ngIf="showAddToFavt" class="icon-wrapper" (click)="addToFavtList(item)">
-          <ion-icon slot="icon-only" name="heart"></ion-icon>
+          <ion-icon slot="icon-only" class="heart-animate" name="heart"></ion-icon>
         </div>
       </ion-card>
     </ion-col>

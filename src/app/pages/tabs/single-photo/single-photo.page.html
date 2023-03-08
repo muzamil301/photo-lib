@@ -1,8 +1,14 @@
 <ion-content class="ion-padding">
     <ion-grid>
         <ion-row class="ion-align-items-center">
+            <ion-col size="12" class="ion-text-center">
+                <img alt="image" [src]="basepath+'/id/'+id+'/500/500'" />
+            </ion-col>
             <ion-col class="ion-text-center">
-                <img alt="image" [src]="basepath+'/id/'+id+'/700/700'" />
+                <ion-button color="light" (click)="removeFromFavtList(id)">
+                    <ion-icon color="primary" slot="start" name="heart-dislike-outline"></ion-icon>
+                    Remove from favorites
+                </ion-button>
             </ion-col>
         </ion-row>
     </ion-grid>

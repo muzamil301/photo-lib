@@ -29,28 +29,32 @@ export class GalleryService {
     }
 
     public addItemToFavtList(favtItem: GalleryImageModel) {
-        console.log('inside add fun()');
-        console.log('item', favtItem);
         const isExist = this.favtImagesData.filter((item: GalleryImageModel) => item.id == favtItem.id);
         
         if (this.favtImagesData.length < 1) {
             this.favtImagesData.push(favtItem);
             this.localStorage.setItem(FAVT_IMAGES_ARRAY, this.favtImagesData);
+            this.presentToast('Item added to favorite');
+            return;
         }
         if (isExist.length > 0) {
-            this.presentToast('Item Already exists!');
+            this.presentToast('Item already exists!');
             return;
         }
         if (isExist.length < 1) {
             this.favtImagesData.push(favtItem);
             this.localStorage.setItem(FAVT_IMAGES_ARRAY, this.favtImagesData);
+            this.presentToast('Item added to favorite');
         }
         
 
     }
 
-    public removeItemFromFavtList(item: GalleryImageModel) {
-
+    public removeItemFromFavtList(id: number) {
+        const filteredList = this.favtImagesData.filter((item: GalleryImageModel) => Number(item.id) !== id);
+        this.favtImagesData = filteredList;
+        this.localStorage.setItem(FAVT_IMAGES_ARRAY, filteredList);
+        this.presentToast('Item removed from favorite');
     }
 
     async presentToast(message:string) {
@@ -59,7 +63,6 @@ export class GalleryService {
             duration: 500,
             position: 'bottom'
         });
-
         await toast.present();
     }
 
