@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { GalleryService } from 'src/app/services/gallery/gallery.service';
-import { GalleryImageModel } from "src/app/model/gallery.model";
 import { ToastController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
+import { GalleryImageModel } from "src/app/model/gallery.model";
+import { GalleryService } from 'src/app/services/gallery/gallery.service';
 
 @Component({
   selector: 'app-photos',
@@ -18,6 +18,7 @@ export class PhotosPage implements OnInit, OnDestroy {
   favtImagesData: any = [];
   galleryData: GalleryImageModel[] = [];
   favtDataSubscription: Subscription = new Subscription;
+  duration = 0;
 
   constructor(private galleryService: GalleryService, private toastController: ToastController) { }
 
@@ -25,7 +26,7 @@ export class PhotosPage implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
     this.loadFavtImagesList();
-    
+    this.duration = this.generateRandomNumber(700, 1000);
   }
 
   loadGalleryImagesList(pageNumber: number, pageLimit: number) {
@@ -33,10 +34,13 @@ export class PhotosPage implements OnInit, OnDestroy {
       {
         next: (data: any) => {
           this.galleryData = [...this.galleryData, ...data];
-          this.loading = false;
+          timer(this.duration).subscribe(()=>this.loading = false);
           this.enableScroll = true;
         },
-        error: (err: any) => console.log(err),
+        error: (err: any) => {
+          console.log(err);
+          this.loading= false;
+        },
       }
     )
   }
@@ -56,7 +60,6 @@ export class PhotosPage implements OnInit, OnDestroy {
   }
 
   async detectScroll($event: any) {
-    const duration = this.generateRandomNumber(200, 300);
 
     const scrollElement = await $event.target.getScrollElement();
     const scrollHeight = scrollElement.scrollHeight - scrollElement.clientHeight;
@@ -66,13 +69,13 @@ export class PhotosPage implements OnInit, OnDestroy {
     const triggerDepth = ((scrollHeight / 100) * targetPercent);
 
     if (currentScrollDepth > triggerDepth) {
+      if(this.loading == true){
+        return;
+      }
       this.pageNumber++;
       this.loading = true;
       this.enableScroll = false;
-      // can use duration variable for random number b/w 200 to 300 miliseconds but UX is not good
-      setTimeout(() => {
-        this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
-      }, 1500)
+      timer(this.duration).subscribe(()=>this.loadGalleryImagesList(this.pageNumber, this.pageLimit));
     }
   }
 
