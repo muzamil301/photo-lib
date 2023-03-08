@@ -1,16 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
 import { GalleryImageModel } from "src/app/model/gallery.model";
 import { ToastController } from '@ionic/angular';
-
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-photos',
   templateUrl: 'photos.page.html',
   styleUrls: ['photos.page.scss']
 })
-export class PhotosPage implements OnInit {
+export class PhotosPage implements OnInit, OnDestroy {
 
   enableScroll: boolean = true;
   loading: boolean = true;
@@ -18,6 +17,7 @@ export class PhotosPage implements OnInit {
   pageLimit: number = 10;
   favtImagesData: any = [];
   galleryData: GalleryImageModel[] = [];
+  favtDataSubscription: Subscription = new Subscription;
 
   constructor(private galleryService: GalleryService, private toastController: ToastController) { }
 
@@ -25,6 +25,7 @@ export class PhotosPage implements OnInit {
   ngOnInit(): void {
     this.loadGalleryImagesList(this.pageNumber, this.pageLimit);
     this.loadFavtImagesList();
+    
   }
 
   loadGalleryImagesList(pageNumber: number, pageLimit: number) {
@@ -89,13 +90,13 @@ export class PhotosPage implements OnInit {
   }
 
   loadFavtImagesList() {
-    this.galleryService.getFavtImages().subscribe((data: any) => {
+    this.favtDataSubscription = this.galleryService.getFavtImages().subscribe((data: any) => {
       this.favtImagesData = data;
     });
   }
 
-  ngOnDestroy(): void {
-    // cleanup here
+  ngOnDestroy() {
+    this.favtDataSubscription.unsubscribe();
   }
 
 }

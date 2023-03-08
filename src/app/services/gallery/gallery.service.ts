@@ -1,11 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { GALLERY_IMAGES_LIST_ENDPOINT, FAVT_IMAGES_ARRAY } from 'src/app/config/constants';
-import { GalleryImageModel } from "src/app/model/gallery.model";
-import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
+import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { BehaviorSubject, filter, take, switchMap } from 'rxjs';
-
+import { BehaviorSubject } from 'rxjs';
+import { FAVT_IMAGES_ARRAY, GALLERY_IMAGES_LIST_ENDPOINT } from 'src/app/config/constants';
+import { LocalStorageService } from 'src/app/services/local-storage/local-storage.service';
 
 @Injectable({
     providedIn: 'root'
@@ -28,16 +26,16 @@ export class GalleryService {
         return this.favtImagesData;
     }
 
-    public updateFavtList(updatedData:any) {
-        
-        if(updatedData){
+    public updateFavtList(updatedData: any) {
+
+        if (updatedData) {
             this.localStorage.setItem(FAVT_IMAGES_ARRAY, updatedData);
             this.favtImagesSource.next(updatedData);
         }
 
     }
 
-    async presentToast(message:string) {
+    async presentToast(message: string) {
         const toast = await this.toastController.create({
             message: message,
             duration: 800,

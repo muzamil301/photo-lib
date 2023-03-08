@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
 import { GalleryImageModel } from "src/app/model/gallery.model";
 import { BASE_PATH } from 'src/app/config/constants';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -12,11 +13,12 @@ import { ToastController } from '@ionic/angular';
   templateUrl: 'single-photo.page.html',
   styleUrls: ['single-photo.page.scss']
 })
-export class SinglePhotoPage implements OnInit {
+export class SinglePhotoPage implements OnInit, OnDestroy {
 
   favtImagesData: any = [];
   basepath = BASE_PATH;
   id: number = 0;
+  favtDataSubscription: Subscription = new Subscription;
 
   constructor(private galleryService: GalleryService, private activatedRoute: ActivatedRoute,
     private route: Router, private toastController: ToastController) {
@@ -54,6 +56,10 @@ export class SinglePhotoPage implements OnInit {
     this.galleryService.getFavtImages().subscribe((data: any) => {
       this.favtImagesData = data;
     });
+  }
+
+  ngOnDestroy() {
+    this.favtDataSubscription.unsubscribe();
   }
 
 }
