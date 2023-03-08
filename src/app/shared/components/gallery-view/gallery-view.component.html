@@ -3,8 +3,8 @@
     <ion-col *ngFor="let item of data;" size-md="3" size-sm="4" size-xs="6">
       <ion-card 
         class="gallery-card ion-no-margin"
-        (click)="enableDetailView==true ? goToDetailPage(item.id) : null"
-        [ngClass]="{'clickable': enableDetailView==true}"
+        (click)="enableDetailView===true ? goToDetailPage(item.id) : null"
+        [ngClass]="{'clickable': enableDetailView===true}"
       >
         <img alt="image" [src]="basepath+'/id/'+item.id+'/400/400'" />
         <div *ngIf="showAddToFavt" class="icon-wrapper" (click)="addToFavtList(item)">
