@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { GalleryService } from 'src/app/services/gallery/gallery.service';
-import { GalleryImageModel } from "src/app/model/gallery.model";
 
 @Component({
   selector: 'app-favorites',

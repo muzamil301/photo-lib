@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
-
 @Component({
   selector: 'app-photos',
   templateUrl: 'single-photo.page.html',
