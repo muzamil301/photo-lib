@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 import { GalleryViewComponent } from './components/gallery-view/gallery-view.component';
 import { CustomLoaderComponent } from './components/custom-loader/custom-loader.component';
 
-
 @NgModule({
   declarations: [GalleryViewComponent, CustomLoaderComponent],
   imports: [
